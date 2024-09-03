@@ -1,0 +1,23 @@
+# Flowty LCM
+# diffusers
+flask
+# torch
+# transformers
+# accelerate
+pillow
+gradio==3.41.2
+
+# StyleMVD
+torch==2.1.2
+torchvision
+diffusers==0.27.2
+transformers==4.36.0
+xatlas
+accelerate
+cupy-cuda11x==12.2.0
+configargparse
+ipython
+
+# Gradio demo
+# gradio
+trimesh
