@@ -43,7 +43,7 @@ class timer:
         print(f"{self.method} took {str(round(end - self.start, 2))}s")
 
 
-def load_models(model_id="Lykon/dreamshaper-7"):
+def load_models(model_id="Lykon/dreamshaper-8-lcm"):
     from diffusers import AutoPipelineForImage2Image, LCMScheduler
     from diffusers.utils import load_image
 
@@ -54,21 +54,12 @@ def load_models(model_id="Lykon/dreamshaper-7"):
 
     lcm_lora_id = "latent-consistency/lcm-lora-sdv1-5"
 
-    if use_fp16:
-        pipe = AutoPipelineForImage2Image.from_pretrained(
-            model_id,
-            cache_dir=cache_path,
-            torch_dtype=torch.float16,
-            variant="fp16",
-            safety_checker=None
-        )
-    else:
-        pipe = AutoPipelineForImage2Image.from_pretrained(
-            model_id,
-            cache_dir=cache_path,
-            safety_checker=None
-        )
-
+    pipe = AutoPipelineForImage2Image.from_pretrained(
+        model_id,
+        cache_dir=cache_path,
+        safety_checker=None
+    )
+        
     pipe.scheduler = LCMScheduler.from_config(pipe.scheduler.config)
 
     pipe.load_lora_weights(lcm_lora_id)

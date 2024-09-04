@@ -4,6 +4,7 @@ import gradio as gr
 from canvas import load_models, cache_path
 from PIL import Image
 from os import path
+import numpy as np
 
 canvas_size = 512
 
@@ -20,16 +21,21 @@ with gr.Blocks() as demo:
                 c = gr.Slider(label="cfg", minimum=0.1, maximum=3, step=0.1, value=1, interactive=True)
                 i_s = gr.Slider(label="sketch strength", minimum=0.1, maximum=0.9, step=0.1, value=0.9, interactive=True)
             with gr.Column():
-                mod = gr.Text(label="Model Hugging Face id (after changing this wait until the model downloads in the console)", value="Lykon/dreamshaper-7", interactive=True)
+                mod = gr.Text(label="Model Hugging Face id (after changing this wait until the model downloads in the console)", value="Lykon/dreamshaper-8-lcm", interactive=True)
                 t = gr.Text(label="Prompt", value="Scary warewolf, 8K, realistic, colorful, long sharp teeth, splash art", interactive=True)
                 se = gr.Number(label="seed", value=1337, interactive=True)
         with gr.Row(equal_height=True):
-            i = gr.Image(source="canvas", tool="color-sketch", shape=(canvas_size, canvas_size), width=canvas_size, height=canvas_size, type="pil")
-            o = gr.Image(width=canvas_size, height=canvas_size)
+            i = gr.Paint(canvas_size=(canvas_size, canvas_size), width=canvas_size, height=canvas_size, image_mode="RGB", interactive=True)
+            o = gr.Image(width=canvas_size, height=canvas_size, interactive=True)
 
             def process_image(p, im, steps, cfg, image_strength, seed):
                 if not im:
                     return Image.new("RGB", (canvas_size, canvas_size))
+                if isinstance(im, dict):
+                    im = np.array(im['composite'], dtype=np.uint8)
+                    im = Image.fromarray(im)
+                elif not isinstance(im, Image.Image):
+                    im = Image.fromarray(im)
                 return infer(
                     prompt=p,
                     image=im,

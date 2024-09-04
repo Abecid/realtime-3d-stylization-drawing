@@ -19,5 +19,5 @@ configargparse
 ipython
 
 # Gradio demo
-# gradio
+# gradio==4.38.0
 trimesh
